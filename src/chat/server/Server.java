@@ -23,7 +23,6 @@ public class Server {
 
     private final List<Connection> connections = Collections.synchronizedList(new ArrayList<>());
     private ServerSocket server;
-    private final Storage storage = Storage.getInstance();
 
     public Server() {
         try {
@@ -102,7 +101,7 @@ public class Server {
                     sendMsgForAll(name + " :" + str);
                 }
 
-                sendMsgForAll(name + " :" + " вышел.");
+                sendMsgForAll(name + " :" + "вышел.");
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
