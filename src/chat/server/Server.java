@@ -97,6 +97,7 @@ public class Server {
                     } else {
                         storage.addUser(name);
 
+                        System.out.println(name + " присоединился.");
                         synchronized (connections){
                             for (Connection connection : connections) {
                                 connection.out.println(name + " присоединился.");
@@ -111,6 +112,7 @@ public class Server {
                 String str = "";
                 while (true) {
                     str = in.readLine();
+                    System.out.println(name + ": " + str);
                     storage.addMessage(name, str);
 
                     if (str.equals("exit")) break;
@@ -122,6 +124,7 @@ public class Server {
                     }
                 }
 
+                System.out.println(name + " вышел.");
                 synchronized (connections){
                     for (Connection connection : connections) {
                         connection.out.println(name + " вышел.");

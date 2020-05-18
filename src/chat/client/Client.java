@@ -41,13 +41,16 @@ public class Client {
 
                 out.println(scan.nextLine());
 
-
-                String acceptAnswer = "";
-                do {
-                    acceptAnswer = in.readLine();
-                    System.out.println(acceptAnswer);
-                    out.println(scan.nextLine());
-                } while (!acceptAnswer.equals("accepted"));
+                while (true) {
+                    String acceptAnswer = in.readLine();
+                    if (acceptAnswer.equals("accepted")){
+                        break;
+                    } else {
+                        System.out.println("Ответ: " + acceptAnswer);
+                        System.out.println("Попробуйте заново ввести ник.");
+                        out.println(scan.nextLine());
+                    }
+                }
 
                 Resender resend = new Resender();
                 resend.start();
