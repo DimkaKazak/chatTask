@@ -16,6 +16,10 @@ import java.util.Scanner;
  */
 public class Client {
 
+    public static void main(String[] args) {
+        new Client();
+    }
+
     private final String IP;
     private final int PORT;
 
@@ -37,12 +41,13 @@ public class Client {
 
                 out.println(scan.nextLine());
 
-                String acceptAnswer = in.readLine();
-                while (!acceptAnswer.equals("accepted")){
+
+                String acceptAnswer = "";
+                do {
+                    acceptAnswer = in.readLine();
                     System.out.println(acceptAnswer);
                     out.println(scan.nextLine());
-                    acceptAnswer = in.readLine();
-                }
+                } while (!acceptAnswer.equals("accepted"));
 
                 Resender resend = new Resender();
                 resend.start();

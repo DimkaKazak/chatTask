@@ -17,6 +17,10 @@ import java.util.List;
  */
 public class Server {
 
+    public static void main(String[] args) {
+        new Server();
+    }
+
     private final List<Connection> connections = Collections.synchronizedList(new ArrayList<>());
     private ServerSocket server;
     private final Storage storage = Storage.getInstance();
@@ -92,14 +96,15 @@ public class Server {
                         out.println("Этот ник уже зарезервирован. Введите другой.");
                     } else {
                         storage.addUser(name);
+
+                        synchronized (connections){
+                            for (Connection connection : connections) {
+                                connection.out.println(name + " присоединился.");
+                            }
+                        }
+
                         out.println("accepted");
                         break;
-                    }
-                }
-
-                synchronized (connections){
-                    for (Connection connection : connections) {
-                        connection.out.println(name + " присоединился.");
                     }
                 }
 
