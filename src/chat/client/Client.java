@@ -26,9 +26,10 @@ public class Client {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
+    private Scanner scanner;
 
     public Client(){
-        Scanner scan = new Scanner(System.in);
+        this.scanner = new Scanner(System.in);
 
         this.IP = ContextManager.getInstance().getProperty(PropertyValues.HOST.getPropertyName());
         this.PORT = Integer.parseInt(ContextManager.getInstance().getProperty(PropertyValues.PORT.getPropertyName()));
@@ -39,34 +40,21 @@ public class Client {
 
                 System.out.println("Введите свой ник:");
 
-                out.println(scan.nextLine());
+                out.println(scanner.nextLine());
 
-                while (true) {
-                    String acceptAnswer = in.readLine();
-                    if (acceptAnswer.equals("accepted")){
-                        break;
-                    } else {
-                        System.out.println("Ответ: " + acceptAnswer);
-                        out.println(scan.nextLine());
-                    }
-                }
+                isAccepted();
 
                 Resender resend = new Resender();
                 resend.start();
 
                 String str = "";
                 while (!str.equals("exit")) {
-                    str = scan.nextLine();
+                    str = scanner.nextLine();
                     out.println(str);
                 }
 
             } finally {
-                if (socket != null){
-                    socket.close();
-                }
-                in.close();
-                out.close();
-                System.exit(-1);
+                close();
             }
         } catch (IOException e){
             e.printStackTrace();
@@ -82,6 +70,33 @@ public class Client {
         this.socket = new Socket(this.IP, this.PORT);
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out = new PrintWriter(socket.getOutputStream(), true);
+    }
+
+    private void close(){
+        try {
+            if (socket != null){
+                socket.close();
+            }
+            in.close();
+            out.close();
+            System.exit(-1);
+        } catch (IOException e) {
+            System.err.println("CANNOT CLOSE CONNECTION!");
+            e.printStackTrace();
+        }
+    }
+
+    private boolean isAccepted() throws IOException{
+        while (true) {
+            String acceptAnswer = in.readLine();
+            if (acceptAnswer.equals("accepted")){
+                break;
+            } else {
+                System.out.println("Ответ: " + acceptAnswer);
+                out.println(scanner.nextLine());
+            }
+        }
+        return true;
     }
 
     /**
