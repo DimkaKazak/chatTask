@@ -47,7 +47,6 @@ public class Client {
                         break;
                     } else {
                         System.out.println("Ответ: " + acceptAnswer);
-                        System.out.println("Попробуйте заново ввести ник.");
                         out.println(scan.nextLine());
                     }
                 }

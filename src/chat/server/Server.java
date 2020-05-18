@@ -89,51 +89,33 @@ public class Server {
         @Override
         public void run() {
             try {
-                while (true){
-                    name = in.readLine();
+                name = in.readLine();
+                out.println("accepted");
 
-                    if( storage.getUsersStorage().containsKey(name) ){
-                        out.println("Этот ник уже зарезервирован. Введите другой.");
-                    } else {
-                        storage.addUser(name);
-
-                        System.out.println(name + " присоединился.");
-                        synchronized (connections){
-                            for (Connection connection : connections) {
-                                connection.out.println(name + " присоединился.");
-                            }
-                        }
-
-                        out.println("accepted");
-                        break;
-                    }
-                }
+                sendMsgForAll(name + " присоединился.");
 
                 String str = "";
                 while (true) {
                     str = in.readLine();
-                    System.out.println(name + ": " + str);
-                    storage.addMessage(name, str);
-
                     if (str.equals("exit")) break;
 
-                    synchronized (connections){
-                        for (Connection connection : connections) {
-                            connection.out.println(name + ": " + str);
-                        }
-                    }
+                    sendMsgForAll(name + " :" + str);
                 }
 
-                System.out.println(name + " вышел.");
-                synchronized (connections){
-                    for (Connection connection : connections) {
-                        connection.out.println(name + " вышел.");
-                    }
-                }
+                sendMsgForAll(name + " :" + " вышел.");
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 close();
+            }
+        }
+
+        private void sendMsgForAll(String message){
+            System.out.println(message);
+            synchronized (connections){
+                for (Connection connection : connections) {
+                    connection.out.println(message);
+                }
             }
         }
 
@@ -144,12 +126,6 @@ public class Server {
                 out.close();
 
                 connections.remove(this);
-
-                if (connections.isEmpty()){
-                    Server.this.closeAll();
-                    System.out.println("SERVER IS OFFLINE");
-                    System.exit(0);
-                }
             } catch (IOException e) {
                 e.printStackTrace();
                 System.err.println("CANNOT CLOSE CONNECTION!");
