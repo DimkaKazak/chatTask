@@ -86,16 +86,16 @@ public class Client {
      * This class read in stream and say all information to user when get new message from server.
      */
     private class Resender extends Thread {
-        private boolean stoped;
+        private boolean stop;
 
         public void setStop() {
-            stoped = true;
+            stop = true;
         }
 
         @Override
         public void run() {
             try {
-                while (!stoped) {
+                while (!stop) {
                     String str = in.readLine();
                     System.out.println(str);
                 }
