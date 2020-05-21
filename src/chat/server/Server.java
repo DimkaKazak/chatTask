@@ -160,7 +160,6 @@ public class Server {
 
                     for (int i = 1; i < word.length() - 1; i++){
                         word = word.replace(word.substring(i, i + 1), "*");
-                        System.out.println("Hello");
                     }
 
                 }
