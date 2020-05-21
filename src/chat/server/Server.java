@@ -1,5 +1,9 @@
 package chat.server;
 
+import IO.exception.UnableToReadException;
+import IO.reader.StreamTextFileReader;
+import constant.FileConstants;
+import constant.Writing;
 import context.ContextManager;
 
 import java.io.BufferedReader;
@@ -88,9 +92,14 @@ public class Server {
         @Override
         public void run() {
             try {
-                name = in.readLine();
-                out.println("accepted");
 
+                name = in.readLine();
+                while (!validateNick(name)){
+                    out.println("declined");
+                    name = in.readLine();
+                }
+
+                out.println("accepted");
                 sendMsgForAll(name + " присоединился.");
 
                 String str = "";
@@ -98,10 +107,10 @@ public class Server {
                     str = in.readLine();
                     if (str.equals("exit")) break;
 
-                    sendMsgForAll(name + " :" + str);
+                    sendMsgForAll(name + ": " + str);
                 }
 
-                sendMsgForAll(name + " :" + "вышел.");
+                sendMsgForAll(name + ": " + "вышел.");
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -113,7 +122,7 @@ public class Server {
             System.out.println(message);
             synchronized (connections){
                 for (Connection connection : connections) {
-                    connection.out.println(message);
+                    connection.out.println( validateMsg(message) );
                 }
             }
         }
@@ -130,6 +139,39 @@ public class Server {
                 System.err.println("CANNOT CLOSE CONNECTION!");
             }
         }
+    }
+
+    private boolean validateNick(String nick){
+        for (String swearWord : Writing.swearWords){
+            if (swearWord.toLowerCase().contains(nick.toLowerCase())){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String validateMsg(String msg){
+        String[] splittedMsg = msg.split(" ");
+        StringBuilder builder = new StringBuilder("");
+
+        for (String word : splittedMsg){
+            for (String swearWord : Writing.swearWords){
+                if (swearWord.toLowerCase().contains(word.toLowerCase()) && word.length() > 1){
+
+                    for (int i = 1; i < word.length() - 1; i++){
+                        word = word.replace(word.substring(i, i + 1), "*");
+                        System.out.println("Hello");
+                    }
+
+                }
+            }
+
+            if (Writing.punctuationMarks.contains(word.toLowerCase())) builder.append(word);
+            else builder.append(" ").append(word);
+        }
+
+        builder.replace(0, 1, "");
+        return builder.toString();
     }
 
 }
