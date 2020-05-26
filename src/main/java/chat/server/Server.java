@@ -26,6 +26,7 @@ public class Server {
     }
 
     private final List<Connection> connections = Collections.synchronizedList(new ArrayList<>());
+    private final List<String> chatHistory = Collections.synchronizedList(new ArrayList<>());
     private ServerSocket server;
 
     public Server() {
@@ -100,6 +101,7 @@ public class Server {
                 }
 
                 out.println("accepted");
+                chatHistory.forEach(historyMsg -> out.println(historyMsg));
                 sendMsgForAll(name + " присоединился.");
 
                 String str = "";
@@ -107,7 +109,9 @@ public class Server {
                     str = in.readLine();
                     if (str.equals("exit")) break;
 
-                    sendMsgForAll(name + ": " + EmojiParser.parseToUnicode(str));
+                    String toSend = name + ": " + EmojiParser.parseToUnicode(str);
+                    sendMsgForAll(toSend);
+                    chatHistory.add(toSend);
                 }
 
                 sendMsgForAll(name + ": " + "вышел.");
