@@ -1,5 +1,7 @@
 package chat.server;
 
+import chat.filter.EmojiFilter;
+import chat.filter.SwearWordsFilter;
 import com.vdurmont.emoji.EmojiParser;
 import constant.Writing;
 import context.ContextManager;
@@ -20,6 +22,8 @@ import java.util.List;
  */
 public class Server {
     private final static Logger LOGGER = Logger.getLogger(Server.class);
+    private final static SwearWordsFilter swearWordsFilter = new SwearWordsFilter();
+    private final static EmojiFilter emojiFilter = new EmojiFilter();
 
     public static void main(String[] args) {
         new Server();
@@ -95,7 +99,7 @@ public class Server {
             try {
 
                 name = in.readLine();
-                while (!validateNick(name)){
+                while (!swearWordsFilter.validateNick(name)){
                     out.println("declined");
                     name = in.readLine();
                 }
@@ -109,7 +113,7 @@ public class Server {
                     str = in.readLine();
                     if (str.equals("exit")) break;
 
-                    String toSend = name + ": " + EmojiParser.parseToUnicode(str);
+                    String toSend = name + ": " + emojiFilter.filter(str);
                     sendMsgForAll(toSend);
                     chatHistory.add(toSend);
                 }
@@ -126,7 +130,7 @@ public class Server {
             LOGGER.info(message);
             synchronized (connections){
                 for (Connection connection : connections) {
-                    connection.out.println( validateMsg(message) );
+                    connection.out.println( swearWordsFilter.filter(message) );
                 }
             }
         }
@@ -144,37 +148,4 @@ public class Server {
             }
         }
     }
-
-    private boolean validateNick(String nick){
-        for (String swearWord : Writing.swearWords){
-            if (swearWord.toLowerCase().contains(nick.toLowerCase())){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private String validateMsg(String msg){
-        String[] splittedMsg = msg.split(" ");
-        StringBuilder builder = new StringBuilder("");
-
-        for (String word : splittedMsg){
-            for (String swearWord : Writing.swearWords){
-                if (swearWord.toLowerCase().contains(word.toLowerCase()) && word.length() > 1){
-
-                    for (int i = 1; i < word.length() - 1; i++){
-                        word = word.replace(word.substring(i, i + 1), "*");
-                    }
-
-                }
-            }
-
-            if (Writing.punctuationMarks.contains(word.toLowerCase())) builder.append(word);
-            else builder.append(" ").append(word);
-        }
-
-        builder.replace(0, 1, "");
-        return builder.toString();
-    }
-
 }
