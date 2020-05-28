@@ -1,9 +1,10 @@
 package chat.server;
 
 import chat.filter.EmojiFilter;
+import chat.filter.NickFilter;
+import chat.filter.SpaceFilter;
 import chat.filter.SwearWordsFilter;
-import com.vdurmont.emoji.EmojiParser;
-import constant.Writing;
+import chat.filter.interfaces.Filter;
 import context.ContextManager;
 import org.apache.log4j.Logger;
 
@@ -15,6 +16,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -22,8 +24,16 @@ import java.util.List;
  */
 public class Server {
     private final static Logger LOGGER = Logger.getLogger(Server.class);
-    private final static SwearWordsFilter swearWordsFilter = new SwearWordsFilter();
-    private final static EmojiFilter emojiFilter = new EmojiFilter();
+
+    private final static NickFilter nickFilter = new NickFilter();
+
+    private final static List<Filter> filterList = new LinkedList<>();
+
+    static {
+        filterList.add(new SwearWordsFilter());
+        filterList.add(new EmojiFilter());
+        filterList.add(new SpaceFilter());
+    }
 
     public static void main(String[] args) {
         new Server();
@@ -99,7 +109,7 @@ public class Server {
             try {
 
                 name = in.readLine();
-                while (!swearWordsFilter.validateNick(name)){
+                while (!nickFilter.validateNick(name)){
                     out.println("declined");
                     name = in.readLine();
                 }
@@ -113,7 +123,9 @@ public class Server {
                     str = in.readLine();
                     if (str.equals("exit")) break;
 
-                    String toSend = name + ": " + emojiFilter.filter(str);
+                    str = filterMsg(str);
+
+                    String toSend = name + ": " + str;
                     sendMsgForAll(toSend);
                     chatHistory.add(toSend);
                 }
@@ -130,7 +142,7 @@ public class Server {
             LOGGER.info(message);
             synchronized (connections){
                 for (Connection connection : connections) {
-                    connection.out.println( swearWordsFilter.filter(message) );
+                    connection.out.println( message );
                 }
             }
         }
@@ -147,5 +159,12 @@ public class Server {
                 LOGGER.error("CANNOT CLOSE CONNECTION!");
             }
         }
+    }
+
+    private static String filterMsg(String message){
+        for (Filter filter : filterList){
+            message = filter.filter(message);
+        }
+        return message;
     }
 }

@@ -1,9 +1,9 @@
 package chat.filter;
 
-import chat.filter.interfaces.NickFilter;
+import chat.filter.interfaces.Filter;
 import constant.Writing;
 
-public class SwearWordsFilter implements NickFilter {
+public class SwearWordsFilter implements Filter {
 
     @Override
     public String filter(String message) {
@@ -28,15 +28,4 @@ public class SwearWordsFilter implements NickFilter {
         builder.replace(0, 1, "");
         return builder.toString();
     }
-
-    @Override
-    public boolean validateNick(String nick) {
-        for (String swearWord : Writing.swearWords){
-            if (swearWord.toLowerCase().contains(nick.toLowerCase())){
-                return false;
-            }
-        }
-        return true;
-    }
-
 }

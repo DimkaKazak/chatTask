@@ -1,5 +1,5 @@
 package chat.filter.interfaces;
 
-public interface NickFilter extends Filter{
+public interface NickValidator {
     boolean validateNick(String nick);
 }
