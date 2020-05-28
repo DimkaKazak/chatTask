@@ -1,9 +1,6 @@
 package chat.server;
 
-import chat.filter.EmojiFilter;
-import chat.filter.NickFilter;
-import chat.filter.SpaceFilter;
-import chat.filter.SwearWordsFilter;
+import chat.filter.*;
 import chat.filter.interfaces.Filter;
 import context.ContextManager;
 import org.apache.log4j.Logger;
@@ -33,6 +30,7 @@ public class Server {
         filterList.add(new SwearWordsFilter());
         filterList.add(new EmojiFilter());
         filterList.add(new SpaceFilter());
+        filterList.add(new NameFilter());
     }
 
     public static void main(String[] args) {
