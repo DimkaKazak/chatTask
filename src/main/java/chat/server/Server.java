@@ -37,7 +37,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        new Server();
+        new Server().startServer();
     }
 
     private final List<Connection> connections = Collections.synchronizedList(new ArrayList<>());
@@ -47,6 +47,15 @@ public class Server {
     public Server() {
         try {
             server = new ServerSocket( Integer.parseInt(ContextManager.getInstance().getProperty("PORT")) );
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.info("SERVER IS OFFLINE: CANNOT CREATE SOCKET CONNECTION");
+            closeAll();
+        }
+    }
+
+    public void startServer(){
+        try {
             LOGGER.info("SERVER IS ONLINE");
 
             while (true) {
@@ -80,6 +89,10 @@ public class Server {
             e.printStackTrace();
             LOGGER.error("CANNOT CLOSE CONNECTIONS!");
         }
+    }
+
+    public void setDownServer() {
+        closeAll();
     }
 
 
@@ -168,4 +181,9 @@ public class Server {
         }
         return message;
     }
+
+    public List<Connection> getConnections() {
+        return connections;
+    }
+
 }

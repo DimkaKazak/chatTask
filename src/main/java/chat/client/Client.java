@@ -18,7 +18,7 @@ public class Client {
     private final static Logger LOGGER = Logger.getLogger(Client.class);
 
     public static void main(String[] args) {
-        new Client();
+        new Client().startClient();
     }
 
     private final String IP;
@@ -34,7 +34,9 @@ public class Client {
 
         this.IP = ContextManager.getInstance().getProperty(PropertyValues.HOST.getPropertyName());
         this.PORT = Integer.parseInt(ContextManager.getInstance().getProperty(PropertyValues.PORT.getPropertyName()));
+    }
 
+    public void startClient(){
         try {
             try {
                 initClient();
@@ -124,5 +126,9 @@ public class Client {
                 e.printStackTrace();
             }
         }
+    }
+
+    public PrintWriter getOut() {
+        return out;
     }
 }
