@@ -2,6 +2,7 @@ package chat.server;
 
 import chat.filter.*;
 import chat.filter.interfaces.Filter;
+import constant.Writing;
 import context.ContextManager;
 import org.apache.log4j.Logger;
 
@@ -30,7 +31,9 @@ public class Server {
         filterList.add(new SwearWordsFilter());
         filterList.add(new EmojiFilter());
         filterList.add(new SpaceFilter());
-        filterList.add(new NameFilter());
+        filterList.add(new FirstLetterFilter(Writing.names));
+        filterList.add(new FirstLetterFilter(Writing.capitals));
+        filterList.add(new FirstLetterFilter(Writing.countries));
     }
 
     public static void main(String[] args) {

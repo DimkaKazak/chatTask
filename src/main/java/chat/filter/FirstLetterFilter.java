@@ -3,7 +3,15 @@ package chat.filter;
 import chat.filter.interfaces.Filter;
 import constant.Writing;
 
-public class NameFilter implements Filter {
+import java.util.List;
+
+public class FirstLetterFilter implements Filter {
+
+    private List<String> writtings;
+
+    public FirstLetterFilter(List<String> writtings){
+        this.writtings = writtings;
+    }
 
     @Override
     public String filter(String message) {
@@ -11,7 +19,7 @@ public class NameFilter implements Filter {
         StringBuilder builder = new StringBuilder("");
 
         for (String word : splittedMsg){
-            for (String name : Writing.names){
+            for (String name : writtings){
                 if (name.toLowerCase().contains(word.toLowerCase())){
                     word = String.valueOf(word.charAt(0)).toUpperCase() + word.substring(1).toLowerCase();
                 }
@@ -24,5 +32,4 @@ public class NameFilter implements Filter {
         builder.replace(0, 1, "");
         return builder.toString();
     }
-
 }

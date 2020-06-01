@@ -10,7 +10,10 @@ import java.util.List;
 public class Writing {
 
     public static List<String> names;
+    public static List<String> capitals;
+    public static List<String> countries;
     public static List<String> swearWords;
+
     public static List<Character> punctuationMarks =  Arrays.asList('`', '[', ']', '(', ')', '{', '}', '<', '>', '⟨', '⟩',
             ',', ':', '-', '–', '—', '―', '!', '.', '-', '?', '\"', '\'', ';', '/', '&', '@', '*', '/', '\\', '|', '#',
             '№',  '%', ':', '^');
@@ -19,6 +22,8 @@ public class Writing {
         try {
             swearWords = initList(FileConstants.RUS_SWEAR_WORDS_FILE_PATH);
             names = initList(FileConstants.NAMES_FILE_PATH);
+            capitals = initList(FileConstants.CAPITALS_FILE_PATH);
+            countries = initList(FileConstants.COUNTRY_FILE_PATH);
         } catch (UnableToReadException e) {
             e.printStackTrace();
         }
