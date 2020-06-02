@@ -1,25 +1,25 @@
 package base.server;
 
-import chat.server.Server;
+import chat.server.MultiThreadedSocketServer;
 
 public class ServerThread extends Thread{
 
-    private Server server;
+    private MultiThreadedSocketServer multiThreadedSocketServer;
 
-    public ServerThread(Server server){
-        this.server = server;
+    public ServerThread(MultiThreadedSocketServer multiThreadedSocketServer){
+        this.multiThreadedSocketServer = multiThreadedSocketServer;
     }
 
     @Override
     public void run() {
-        this.server.startServer();
+        this.multiThreadedSocketServer.startServer();
     }
 
-    public Server getServer() {
-        return server;
+    public MultiThreadedSocketServer getMultiThreadedSocketServer() {
+        return multiThreadedSocketServer;
     }
 
-    public void setServer(Server server) {
-        this.server = server;
+    public void setMultiThreadedSocketServer(MultiThreadedSocketServer multiThreadedSocketServer) {
+        this.multiThreadedSocketServer = multiThreadedSocketServer;
     }
 }

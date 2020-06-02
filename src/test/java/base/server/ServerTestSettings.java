@@ -1,7 +1,7 @@
 package base.server;
 
-import chat.client.Client;
-import chat.server.Server;
+import chat.client.MultiThreadedSocketClient;
+import chat.server.MultiThreadedSocketServer;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class ServerTest {
+public class ServerTestSettings {
 
     protected final int POOL_SIZE = 30;
     protected final int INVOCATION_COUNT = 1;
@@ -21,11 +21,11 @@ public class ServerTest {
     @BeforeClass
     public void setUpSpace(){
 
-        serverThread = new ServerThread(new Server());
+        serverThread = new ServerThread(new MultiThreadedSocketServer());
         serverThread.start();
 
         clientPool = Executors.newFixedThreadPool(POOL_SIZE);
-        Runnable clientInitTask = () -> new Client().startClient();
+        Runnable clientInitTask = () -> new MultiThreadedSocketClient().startClient();
         for (int i = 0; i < POOL_SIZE; i++){
             clientPool.execute(clientInitTask);
         }

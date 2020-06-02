@@ -18,10 +18,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Server for our app. It uses socket-connection.
+ * MultiThreadedSocketServer for our app. It uses socket-connection.
  */
-public class Server {
-    private final static Logger LOGGER = Logger.getLogger(Server.class);
+public class MultiThreadedSocketServer {
+    private final static Logger LOGGER = Logger.getLogger(MultiThreadedSocketServer.class);
 
     private final static NickFilter nickFilter = new NickFilter();
 
@@ -36,15 +36,20 @@ public class Server {
         filterList.add(new FirstLetterFilter(Writing.countries));
     }
 
+    private static boolean isServerOn = false;
+
     public static void main(String[] args) {
-        new Server().startServer();
+        if (!isServerOn){
+            new MultiThreadedSocketServer().startServer();
+            isServerOn = true;
+        }
     }
 
     private final List<Connection> connections = Collections.synchronizedList(new ArrayList<>());
     private final List<String> chatHistory = Collections.synchronizedList(new ArrayList<>());
     private ServerSocket server;
 
-    public Server() {
+    public MultiThreadedSocketServer() {
         try {
             server = new ServerSocket( Integer.parseInt(ContextManager.getInstance().getProperty("PORT")) );
         } catch (IOException e) {
@@ -88,6 +93,8 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
             LOGGER.error("CANNOT CLOSE CONNECTIONS!");
+        } finally {
+            isServerOn = false;
         }
     }
 

@@ -14,11 +14,11 @@ import java.util.Scanner;
 /**
  *  User of chat room.
  */
-public class Client {
-    private final static Logger LOGGER = Logger.getLogger(Client.class);
+public class MultiThreadedSocketClient {
+    private final static Logger LOGGER = Logger.getLogger(MultiThreadedSocketClient.class);
 
     public static void main(String[] args) {
-        new Client().startClient();
+        new MultiThreadedSocketClient().startClient();
     }
 
     private final String IP;
@@ -29,7 +29,7 @@ public class Client {
     private PrintWriter out;
     private final Scanner scanner;
 
-    public Client(){
+    public MultiThreadedSocketClient(){
         this.scanner = new Scanner(System.in);
 
         this.IP = ContextManager.getInstance().getProperty(PropertyValues.HOST.getPropertyName());
