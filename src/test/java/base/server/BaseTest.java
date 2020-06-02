@@ -1,4 +1,4 @@
-package provider;
+package base.server;
 
 import base.server.ServerThread;
 import chat.client.MultiThreadedSocketClient;
@@ -9,7 +9,7 @@ import org.testng.annotations.BeforeClass;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ServerClientProvider {
+public class BaseTest {
 
     protected final int POOL_SIZE = 30;
     protected final int INVOCATION_COUNT = 1;

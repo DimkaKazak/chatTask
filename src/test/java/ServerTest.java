@@ -1,10 +1,10 @@
 import org.testng.annotations.Test;
-import provider.ServerClientProvider;
+import base.server.BaseTest;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 
-public class ServerTest extends ServerClientProvider {
+public class ServerTest extends BaseTest {
 
     @Test(threadPoolSize = POOL_SIZE, invocationCount = INVOCATION_COUNT, invocationTimeOut = INVOCATION_TIME_OUT)
     public void testConnections() {
