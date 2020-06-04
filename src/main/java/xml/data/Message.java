@@ -11,6 +11,19 @@ public class Message {
 
     public Message(){}
 
+    public Message(String msg){
+        this.msg = msg;
+        this.date = new Date();
+    }
+
+    public Message(String host, int port, String token, String msg, Date date){
+        this.host = host;
+        this.port = port;
+        this.token = token;
+        this.msg = msg;
+        this.date = date;
+    }
+
     private String host;
     private int port;
     private String token;

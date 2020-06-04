@@ -5,17 +5,19 @@ import chat.filter.interfaces.Filter;
 import constant.Writing;
 import context.ContextManager;
 import org.apache.log4j.Logger;
+import xml.data.Message;
+import xml.marshaller.XmlMarshaller;
+import xml.unmarshaller.XmlUnmarshaller;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * MultiThreadedSocketServer for our app. It uses socket-connection.
@@ -23,13 +25,23 @@ import java.util.List;
 public class MultiThreadedSocketServer {
     private final static Logger LOGGER = Logger.getLogger(MultiThreadedSocketServer.class);
 
-    private final static NickFilter nickFilter = new NickFilter();
+    private static XmlMarshaller xmlMarshaller;
+    private static XmlUnmarshaller xmlUnmarshaller;
 
+    private static void initMarshalling() throws JAXBException{
+
+        JAXBContext context = JAXBContext.newInstance(Message.class);
+        xmlMarshaller = new XmlMarshaller(context);
+        xmlUnmarshaller = new XmlUnmarshaller(context);
+
+    }
+
+    private final static NickFilter nickFilter = new NickFilter();
     private final static List<Filter> filterList = new LinkedList<>();
 
     static {
-        filterList.add(new SwearWordsFilter());
         filterList.add(new EmojiFilter());
+        filterList.add(new SwearWordsFilter());
         filterList.add(new SpaceFilter());
         filterList.add(new FirstLetterFilter(Writing.names));
         filterList.add(new FirstLetterFilter(Writing.capitals));
@@ -52,9 +64,10 @@ public class MultiThreadedSocketServer {
     public MultiThreadedSocketServer() {
         try {
             server = new ServerSocket( Integer.parseInt(ContextManager.getInstance().getProperty("PORT")) );
-        } catch (IOException e) {
+            initMarshalling();
+        } catch (IOException | JAXBException e) {
             e.printStackTrace();
-            LOGGER.info("SERVER IS OFFLINE: CANNOT CREATE SOCKET CONNECTION");
+            LOGGER.info("SERVER IS OFFLINE: CANNOT LAUNCH SERVER");
             closeAll();
         }
     }
@@ -128,42 +141,42 @@ public class MultiThreadedSocketServer {
         @Override
         public void run() {
             try {
-
-                name = in.readLine();
+                name = getMessageIn(readXml(in)).getMsg();
                 while (!nickFilter.validateNick(name)){
-                    out.println("declined");
-                    name = in.readLine();
+                    out.println(initMessageOut("declined"));
+                    name = getMessageIn(readXml(in)).getMsg();
                 }
 
-                out.println("accepted");
-                chatHistory.forEach(historyMsg -> out.println(historyMsg));
+                out.println(initMessageOut("accepted"));
+                chatHistory.forEach(historyMsg -> {
+                    out.println(initMessageOut(historyMsg));
+                });
                 sendMsgForAll(name + " присоединился.");
 
-                String str = "";
+
                 while (true) {
-                    str = in.readLine();
+                    String str = getMessageIn(readXml(in)).getMsg();
+
                     if (str.equals("exit")) break;
-
-                    str = filterMsg(str);
-
-                    String toSend = name + ": " + str;
+                    String toSend = name + ": " + filterMsg(str);
                     sendMsgForAll(toSend);
                     chatHistory.add(toSend);
                 }
 
                 sendMsgForAll(name + ": " + "вышел.");
-            } catch (IOException e) {
+            } catch (IOException | JAXBException e) {
                 e.printStackTrace();
             } finally {
                 close();
             }
         }
 
-        private void sendMsgForAll(String message){
+        private void sendMsgForAll(String message) throws JAXBException {
+            String msg = initMessageOut(message);
             LOGGER.info(message);
             synchronized (connections){
                 for (Connection connection : connections) {
-                    connection.out.println( message );
+                    connection.out.println( msg );
                 }
             }
         }
@@ -179,6 +192,37 @@ public class MultiThreadedSocketServer {
                 e.printStackTrace();
                 LOGGER.error("CANNOT CLOSE CONNECTION!");
             }
+        }
+
+        private String readXml(BufferedReader in) throws IOException {
+            StringBuilder xml = new StringBuilder();
+            String line;
+            while ((line = in.readLine()) != null) {
+                if(line.isEmpty()) break;
+                xml.append(line);
+            }
+            return xml.toString();
+        }
+
+        private Message getMessageIn(String msg) throws JAXBException {
+            return (Message) xmlUnmarshaller.getUnmarshalledXml(msg);
+        }
+
+        private String initMessageOut(String msg){
+            Message messageOut = new Message();
+            messageOut.setPort(server.getLocalPort());
+            messageOut.setHost(server.getLocalSocketAddress().toString());
+            messageOut.setMsg(msg);
+            messageOut.setToken("RandomToken");
+            messageOut.setDate(new Date());
+
+            try {
+                return xmlMarshaller.getXml(messageOut);
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            }
+
+            return "ERROR";
         }
     }
 

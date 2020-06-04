@@ -3,12 +3,18 @@ package chat.client;
 import constant.PropertyValues;
 import context.ContextManager;
 import org.apache.log4j.Logger;
+import xml.data.Message;
+import xml.marshaller.XmlMarshaller;
+import xml.unmarshaller.XmlUnmarshaller;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -16,6 +22,16 @@ import java.util.Scanner;
  */
 public class MultiThreadedSocketClient {
     private final static Logger LOGGER = Logger.getLogger(MultiThreadedSocketClient.class);
+    private static XmlMarshaller xmlMarshaller;
+    private static XmlUnmarshaller xmlUnmarshaller;
+
+    private static void initMarshalling() throws JAXBException {
+
+        JAXBContext context = JAXBContext.newInstance(Message.class);
+        xmlMarshaller = new XmlMarshaller(context);
+        xmlUnmarshaller = new XmlUnmarshaller(context);
+
+    }
 
     public static void main(String[] args) {
         new MultiThreadedSocketClient().startClient();
@@ -34,6 +50,12 @@ public class MultiThreadedSocketClient {
 
         this.IP = ContextManager.getInstance().getProperty(PropertyValues.HOST.getPropertyName());
         this.PORT = Integer.parseInt(ContextManager.getInstance().getProperty(PropertyValues.PORT.getPropertyName()));
+
+        try {
+            initMarshalling();
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
     }
 
     public void startClient(){
@@ -42,8 +64,8 @@ public class MultiThreadedSocketClient {
                 initClient();
 
                 System.out.println("Введите свой ник:");
-
-                out.println(scanner.nextLine());
+                String msg = initMessageOut(scanner.nextLine());
+                out.println(msg);
 
                 isAccepted();
 
@@ -53,9 +75,11 @@ public class MultiThreadedSocketClient {
                 String str = "";
                 while (!str.equals("exit")) {
                     str = scanner.nextLine();
-                    out.println(str);
+                    out.println(initMessageOut(str));
                 }
 
+            } catch (JAXBException e) {
+                e.printStackTrace();
             } finally {
                 close();
             }
@@ -91,14 +115,14 @@ public class MultiThreadedSocketClient {
         }
     }
 
-    private boolean isAccepted() throws IOException{
+    private boolean isAccepted() throws IOException, JAXBException {
         while (true) {
-            String acceptAnswer = in.readLine();
+            String acceptAnswer = getMessageIn(readXml(in)).getMsg();
             if (acceptAnswer.equals("accepted")){
                 break;
             } else {
                 LOGGER.info(String.format("Ответ: %s", acceptAnswer));
-                out.println(scanner.nextLine());
+                out.println(initMessageOut(scanner.nextLine()));
             }
         }
         return true;
@@ -118,14 +142,45 @@ public class MultiThreadedSocketClient {
         public void run() {
             try {
                 while (!stop) {
-                    String str = in.readLine();
+                    String str = getMessageIn(readXml(in)).getMsg();
                     LOGGER.info(str);
                 }
-            } catch (IOException e) {
+            } catch (IOException | JAXBException e) {
                 setStop();
                 e.printStackTrace();
             }
         }
+    }
+
+    private String readXml(BufferedReader in) throws IOException {
+        StringBuilder xml = new StringBuilder();
+        String line;
+        while ((line = in.readLine()) != null) {
+            if(line.isEmpty()) break;
+            xml.append(line);
+        }
+        return xml.toString();
+    }
+
+    private Message getMessageIn(String msg) throws JAXBException {
+        return (Message) xmlUnmarshaller.getUnmarshalledXml(msg);
+    }
+
+    private String initMessageOut(String msg){
+        Message messageOut = new Message();
+        messageOut.setPort(this.PORT);
+        messageOut.setHost(this.IP);
+        messageOut.setMsg(msg);
+        messageOut.setToken("RandomToken");
+        messageOut.setDate(new Date());
+
+        try {
+            return xmlMarshaller.getXml(messageOut);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+
+        return "ERROR";
     }
 
     public PrintWriter getOut() {
