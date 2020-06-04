@@ -7,7 +7,7 @@ import java.util.Date;
 
 @XmlType(name = "message")
 @XmlRootElement
-public class Message {
+public class Message implements Comparable<Message>{
 
     public Message(){}
 
@@ -29,6 +29,13 @@ public class Message {
     private String token;
     private String msg;
     private Date date;
+
+    @Override
+    public int compareTo(Message message) {
+        if (getDate() == null || message.getDate() == null)
+            return 0;
+        return getDate().compareTo(message.getDate());
+    }
 
     public void setHost(String host) {
         this.host = host;
@@ -74,4 +81,6 @@ public class Message {
     public String getToken() {
         return token;
     }
+
+
 }
