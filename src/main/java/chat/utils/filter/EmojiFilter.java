@@ -1,6 +1,6 @@
-package chat.filter;
+package chat.utils.filter;
 
-import chat.filter.interfaces.Filter;
+import chat.utils.filter.interfaces.Filter;
 import com.vdurmont.emoji.EmojiParser;
 
 public class EmojiFilter implements Filter {

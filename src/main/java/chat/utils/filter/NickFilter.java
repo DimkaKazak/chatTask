@@ -1,8 +1,8 @@
-package chat.filter;
+package chat.utils.filter;
 
 import constant.Writing;
 
-public class NickFilter implements chat.filter.interfaces.NickValidator {
+public class NickFilter implements chat.utils.filter.interfaces.NickValidator {
     @Override
     public boolean validateNick(String nick) {
         for (String swearWord : Writing.swearWords){
