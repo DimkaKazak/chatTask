@@ -1,5 +1,7 @@
 package chat.utils;
 
+import chat.client.MultiThreadedSocketClient;
+import chat.server.MultiThreadedSocketServer;
 import xml.data.Message;
 import xml.marshaller.XmlMarshaller;
 import xml.unmarshaller.XmlUnmarshaller;
@@ -26,16 +28,16 @@ public class XmlUtils {
         return (Message) xmlUnmarshaller.getUnmarshalledXml(msg);
     }
 
-    public static String initMessageOut(String msg, ServerSocket server, XmlMarshaller xmlMarshaller){
+    public static String initMessageOut(String msg, MultiThreadedSocketServer multiThreadedSocketServer){
         Message messageOut = new Message();
-        messageOut.setPort(server.getLocalPort());
-        messageOut.setHost(server.getLocalSocketAddress().toString());
+        messageOut.setPort(multiThreadedSocketServer.getServer().getLocalPort());
+        messageOut.setHost(multiThreadedSocketServer.getServer().getLocalSocketAddress().toString());
         messageOut.setMsg(msg);
         messageOut.setToken("RandomToken");
         messageOut.setDate(new Date());
 
         try {
-            return xmlMarshaller.getXml(messageOut);
+            return multiThreadedSocketServer.getXmlMarshaller().getXml(messageOut);
         } catch (JAXBException e) {
             e.printStackTrace();
         }
@@ -43,16 +45,16 @@ public class XmlUtils {
         return "ERROR";
     }
 
-    public static String initMessageOut(String msg, int port, String host, XmlMarshaller xmlMarshaller){
+    public static String initMessageOut(String msg, MultiThreadedSocketClient multiThreadedSocketClient){
         Message messageOut = new Message();
-        messageOut.setPort(port);
-        messageOut.setHost(host);
+        messageOut.setPort(multiThreadedSocketClient.getPORT());
+        messageOut.setHost(multiThreadedSocketClient.getIP());
         messageOut.setMsg(msg);
         messageOut.setToken("RandomToken");
         messageOut.setDate(new Date());
 
         try {
-            return xmlMarshaller.getXml(messageOut);
+            return multiThreadedSocketClient.getXmlMarshaller().getXml(messageOut);
         } catch (JAXBException e) {
             e.printStackTrace();
         }

@@ -66,7 +66,7 @@ public class MultiThreadedSocketClient {
                 initClient();
 
                 System.out.println("Введите свой ник:");
-                String msg = initMessageOut(scanner.nextLine(), this.PORT, this.IP, xmlMarshaller);
+                String msg = initMessageOut(scanner.nextLine(), this);
                 out.println(msg);
 
                 isAccepted();
@@ -77,7 +77,7 @@ public class MultiThreadedSocketClient {
                 String str = "";
                 while (!str.equals("exit")) {
                     str = scanner.nextLine();
-                    out.println(initMessageOut(str, this.PORT, this.IP, xmlMarshaller));
+                    out.println(initMessageOut(str, this));
                 }
 
             } catch (JAXBException e) {
@@ -124,7 +124,7 @@ public class MultiThreadedSocketClient {
                 break;
             } else {
                 LOGGER.info(String.format("Ответ: %s", acceptAnswer));
-                out.println(initMessageOut(scanner.nextLine(), this.PORT, this.IP, xmlMarshaller));
+                out.println(initMessageOut(scanner.nextLine(), this));
             }
         }
         return true;
@@ -156,5 +156,57 @@ public class MultiThreadedSocketClient {
 
     public PrintWriter getOut() {
         return out;
+    }
+
+    public BufferedReader getIn() {
+        return in;
+    }
+
+    public int getPORT() {
+        return PORT;
+    }
+
+    public Logger getLOGGER() {
+        return LOGGER;
+    }
+
+    public Scanner getScanner() {
+        return scanner;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public String getIP() {
+        return IP;
+    }
+
+    public XmlMarshaller getXmlMarshaller() {
+        return xmlMarshaller;
+    }
+
+    public XmlUnmarshaller getXmlUnmarshaller() {
+        return xmlUnmarshaller;
+    }
+
+    public void setIn(BufferedReader in) {
+        this.in = in;
+    }
+
+    public void setOut(PrintWriter out) {
+        this.out = out;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public void setXmlMarshaller(XmlMarshaller xmlMarshaller) {
+        MultiThreadedSocketClient.xmlMarshaller = xmlMarshaller;
+    }
+
+    public void setXmlUnmarshaller(XmlUnmarshaller xmlUnmarshaller) {
+        MultiThreadedSocketClient.xmlUnmarshaller = xmlUnmarshaller;
     }
 }

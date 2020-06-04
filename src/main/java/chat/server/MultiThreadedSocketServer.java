@@ -145,13 +145,13 @@ public class MultiThreadedSocketServer {
             try {
                 name = getMessageIn(readXml(in), xmlUnmarshaller).getMsg();
                 while (!nickFilter.validateNick(name)){
-                    out.println(initMessageOut("declined", server, xmlMarshaller));
+                    out.println(initMessageOut("declined", MultiThreadedSocketServer.this));
                     name = getMessageIn(readXml(in), xmlUnmarshaller).getMsg();
                 }
 
-                out.println(initMessageOut("accepted", server, xmlMarshaller));
+                out.println(initMessageOut("accepted", MultiThreadedSocketServer.this));
                 chatHistory.forEach(historyMsg -> {
-                    out.println(initMessageOut(historyMsg, server, xmlMarshaller));
+                    out.println(initMessageOut(historyMsg, MultiThreadedSocketServer.this));
                 });
                 sendMsgForAll(name + " присоединился.");
 
@@ -174,7 +174,7 @@ public class MultiThreadedSocketServer {
         }
 
         private void sendMsgForAll(String message) throws JAXBException {
-            String msg = initMessageOut(message, server, xmlMarshaller);
+            String msg = initMessageOut(message, MultiThreadedSocketServer.this);
             LOGGER.info(message);
             synchronized (connections){
                 for (Connection connection : connections) {
@@ -206,6 +206,50 @@ public class MultiThreadedSocketServer {
 
     public List<Connection> getConnections() {
         return connections;
+    }
+
+    public XmlUnmarshaller getXmlUnmarshaller() {
+        return xmlUnmarshaller;
+    }
+
+    public XmlMarshaller getXmlMarshaller() {
+        return xmlMarshaller;
+    }
+
+    public Logger getLOGGER() {
+        return LOGGER;
+    }
+
+    public List<Filter> getFilterList() {
+        return filterList;
+    }
+
+    public List<String> getChatHistory() {
+        return chatHistory;
+    }
+
+    public NickFilter getNickFilter() {
+        return nickFilter;
+    }
+
+    public ServerSocket getServer() {
+        return server;
+    }
+
+    public void setXmlUnmarshaller(XmlUnmarshaller xmlUnmarshaller) {
+        MultiThreadedSocketServer.xmlUnmarshaller = xmlUnmarshaller;
+    }
+
+    public void setXmlMarshaller(XmlMarshaller xmlMarshaller) {
+        MultiThreadedSocketServer.xmlMarshaller = xmlMarshaller;
+    }
+
+    public void setServer(ServerSocket server) {
+        this.server = server;
+    }
+
+    public void setIsServerOn(boolean isServerOn) {
+        MultiThreadedSocketServer.isServerOn = isServerOn;
     }
 
 }
