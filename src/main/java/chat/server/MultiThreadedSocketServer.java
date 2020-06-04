@@ -1,7 +1,7 @@
 package chat.server;
 
-import chat.filter.*;
-import chat.filter.interfaces.Filter;
+import chat.utils.filter.*;
+import chat.utils.filter.interfaces.Filter;
 import constant.Writing;
 import context.ContextManager;
 import org.apache.log4j.Logger;
@@ -60,7 +60,7 @@ public class MultiThreadedSocketServer {
     }
 
     private final List<Connection> connections = Collections.synchronizedList(new ArrayList<>());
-    private final List<String> chatHistory = Collections.synchronizedList(new ArrayList<>());
+    private final List<Message> chatHistory = Collections.synchronizedList(new ArrayList<>());
     private ServerSocket server;
 
     public MultiThreadedSocketServer() {
@@ -150,19 +150,21 @@ public class MultiThreadedSocketServer {
                 }
 
                 out.println(initMessageOut("accepted", MultiThreadedSocketServer.this));
+                chatHistory.sort(Comparator.comparing(Message::getDate));
                 chatHistory.forEach(historyMsg -> {
-                    out.println(initMessageOut(historyMsg, MultiThreadedSocketServer.this));
+                    out.println(initMessageOut(historyMsg.getMsg(), MultiThreadedSocketServer.this));
                 });
                 sendMsgForAll(name + " присоединился.");
 
 
                 while (true) {
-                    String str = getMessageIn(readXml(in), xmlUnmarshaller).getMsg();
+                    Message msgIn = getMessageIn(readXml(in), xmlUnmarshaller);
+                    String str = msgIn.getMsg();
 
                     if (str.equals("exit")) break;
                     String toSend = name + ": " + filterMsg(str);
                     sendMsgForAll(toSend);
-                    chatHistory.add(toSend);
+                    chatHistory.add(msgIn);
                 }
 
                 sendMsgForAll(name + ": " + "вышел.");
@@ -224,7 +226,7 @@ public class MultiThreadedSocketServer {
         return filterList;
     }
 
-    public List<String> getChatHistory() {
+    public List<Message> getChatHistory() {
         return chatHistory;
     }
 
