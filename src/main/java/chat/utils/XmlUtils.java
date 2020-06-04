@@ -3,13 +3,11 @@ package chat.utils;
 import chat.client.MultiThreadedSocketClient;
 import chat.server.MultiThreadedSocketServer;
 import xml.data.Message;
-import xml.marshaller.XmlMarshaller;
 import xml.unmarshaller.XmlUnmarshaller;
 
 import javax.xml.bind.JAXBException;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.Date;
 
 public class XmlUtils {
@@ -33,7 +31,7 @@ public class XmlUtils {
         messageOut.setPort(multiThreadedSocketServer.getServer().getLocalPort());
         messageOut.setHost(multiThreadedSocketServer.getServer().getLocalSocketAddress().toString());
         messageOut.setMsg(msg);
-        messageOut.setToken("RandomToken");
+        messageOut.setToken(TokenGenerator.getAlphaNumericString(20));
         messageOut.setDate(new Date());
 
         try {
@@ -50,7 +48,7 @@ public class XmlUtils {
         messageOut.setPort(multiThreadedSocketClient.getPORT());
         messageOut.setHost(multiThreadedSocketClient.getIP());
         messageOut.setMsg(msg);
-        messageOut.setToken("RandomToken");
+        messageOut.setToken(TokenGenerator.getAlphaNumericString(20));
         messageOut.setDate(new Date());
 
         try {
