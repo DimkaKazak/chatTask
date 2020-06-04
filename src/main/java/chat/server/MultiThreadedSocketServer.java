@@ -19,6 +19,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+import static chat.utils.XmlUtils.*;
+
 /**
  * MultiThreadedSocketServer for our app. It uses socket-connection.
  */
@@ -141,21 +143,21 @@ public class MultiThreadedSocketServer {
         @Override
         public void run() {
             try {
-                name = getMessageIn(readXml(in)).getMsg();
+                name = getMessageIn(readXml(in), xmlUnmarshaller).getMsg();
                 while (!nickFilter.validateNick(name)){
-                    out.println(initMessageOut("declined"));
-                    name = getMessageIn(readXml(in)).getMsg();
+                    out.println(initMessageOut("declined", server, xmlMarshaller));
+                    name = getMessageIn(readXml(in), xmlUnmarshaller).getMsg();
                 }
 
-                out.println(initMessageOut("accepted"));
+                out.println(initMessageOut("accepted", server, xmlMarshaller));
                 chatHistory.forEach(historyMsg -> {
-                    out.println(initMessageOut(historyMsg));
+                    out.println(initMessageOut(historyMsg, server, xmlMarshaller));
                 });
                 sendMsgForAll(name + " присоединился.");
 
 
                 while (true) {
-                    String str = getMessageIn(readXml(in)).getMsg();
+                    String str = getMessageIn(readXml(in), xmlUnmarshaller).getMsg();
 
                     if (str.equals("exit")) break;
                     String toSend = name + ": " + filterMsg(str);
@@ -172,7 +174,7 @@ public class MultiThreadedSocketServer {
         }
 
         private void sendMsgForAll(String message) throws JAXBException {
-            String msg = initMessageOut(message);
+            String msg = initMessageOut(message, server, xmlMarshaller);
             LOGGER.info(message);
             synchronized (connections){
                 for (Connection connection : connections) {
@@ -192,37 +194,6 @@ public class MultiThreadedSocketServer {
                 e.printStackTrace();
                 LOGGER.error("CANNOT CLOSE CONNECTION!");
             }
-        }
-
-        private String readXml(BufferedReader in) throws IOException {
-            StringBuilder xml = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                if(line.isEmpty()) break;
-                xml.append(line);
-            }
-            return xml.toString();
-        }
-
-        private Message getMessageIn(String msg) throws JAXBException {
-            return (Message) xmlUnmarshaller.getUnmarshalledXml(msg);
-        }
-
-        private String initMessageOut(String msg){
-            Message messageOut = new Message();
-            messageOut.setPort(server.getLocalPort());
-            messageOut.setHost(server.getLocalSocketAddress().toString());
-            messageOut.setMsg(msg);
-            messageOut.setToken("RandomToken");
-            messageOut.setDate(new Date());
-
-            try {
-                return xmlMarshaller.getXml(messageOut);
-            } catch (JAXBException e) {
-                e.printStackTrace();
-            }
-
-            return "ERROR";
         }
     }
 

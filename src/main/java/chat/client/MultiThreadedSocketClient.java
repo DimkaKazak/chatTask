@@ -17,6 +17,8 @@ import java.net.Socket;
 import java.util.Date;
 import java.util.Scanner;
 
+import static chat.utils.XmlUtils.*;
+
 /**
  *  User of chat room.
  */
@@ -64,7 +66,7 @@ public class MultiThreadedSocketClient {
                 initClient();
 
                 System.out.println("Введите свой ник:");
-                String msg = initMessageOut(scanner.nextLine());
+                String msg = initMessageOut(scanner.nextLine(), this.PORT, this.IP, xmlMarshaller);
                 out.println(msg);
 
                 isAccepted();
@@ -75,7 +77,7 @@ public class MultiThreadedSocketClient {
                 String str = "";
                 while (!str.equals("exit")) {
                     str = scanner.nextLine();
-                    out.println(initMessageOut(str));
+                    out.println(initMessageOut(str, this.PORT, this.IP, xmlMarshaller));
                 }
 
             } catch (JAXBException e) {
@@ -117,12 +119,12 @@ public class MultiThreadedSocketClient {
 
     private boolean isAccepted() throws IOException, JAXBException {
         while (true) {
-            String acceptAnswer = getMessageIn(readXml(in)).getMsg();
+            String acceptAnswer = getMessageIn(readXml(in), xmlUnmarshaller).getMsg();
             if (acceptAnswer.equals("accepted")){
                 break;
             } else {
                 LOGGER.info(String.format("Ответ: %s", acceptAnswer));
-                out.println(initMessageOut(scanner.nextLine()));
+                out.println(initMessageOut(scanner.nextLine(), this.PORT, this.IP, xmlMarshaller));
             }
         }
         return true;
@@ -142,7 +144,7 @@ public class MultiThreadedSocketClient {
         public void run() {
             try {
                 while (!stop) {
-                    String str = getMessageIn(readXml(in)).getMsg();
+                    String str = getMessageIn(readXml(in), xmlUnmarshaller).getMsg();
                     LOGGER.info(str);
                 }
             } catch (IOException | JAXBException e) {
@@ -150,37 +152,6 @@ public class MultiThreadedSocketClient {
                 e.printStackTrace();
             }
         }
-    }
-
-    private String readXml(BufferedReader in) throws IOException {
-        StringBuilder xml = new StringBuilder();
-        String line;
-        while ((line = in.readLine()) != null) {
-            if(line.isEmpty()) break;
-            xml.append(line);
-        }
-        return xml.toString();
-    }
-
-    private Message getMessageIn(String msg) throws JAXBException {
-        return (Message) xmlUnmarshaller.getUnmarshalledXml(msg);
-    }
-
-    private String initMessageOut(String msg){
-        Message messageOut = new Message();
-        messageOut.setPort(this.PORT);
-        messageOut.setHost(this.IP);
-        messageOut.setMsg(msg);
-        messageOut.setToken("RandomToken");
-        messageOut.setDate(new Date());
-
-        try {
-            return xmlMarshaller.getXml(messageOut);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-
-        return "ERROR";
     }
 
     public PrintWriter getOut() {
