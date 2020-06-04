@@ -16,7 +16,7 @@ public class Writing {
 
     public static List<Character> punctuationMarks =  Arrays.asList('`', '[', ']', '(', ')', '{', '}', '<', '>', '⟨', '⟩',
             ',', ':', '-', '–', '—', '―', '!', '.', '-', '?', '\"', '\'', ';', '/', '&', '@', '*', '/', '\\', '|', '#',
-            '№',  '%', ':', '^');
+            '№',  '%', ':', '^', '\n', '\t');
 
     static {
         try {
@@ -40,7 +40,8 @@ public class Writing {
     private static List<String> initList(String filePath) throws UnableToReadException {
         String words = new StreamTextFileReader(filePath).read();
         words = replacePM(words);
-        return Arrays.asList(words.split(" "));
+        List<String> resultList = Arrays.asList(words.split(" "));
+        return resultList;
     }
 
 }

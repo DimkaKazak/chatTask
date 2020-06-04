@@ -20,7 +20,7 @@ public class SpaceFilter implements Filter {
             builder.append(val).append(" ");
         }
 
-        builder.replace(builder.length() - 1, builder.length(), "");
+        if (!builder.toString().isEmpty()) builder.replace(builder.length() - 1, builder.length(), "");
         return builder.toString();
     }
 }
