@@ -1,6 +1,6 @@
-package chat.filter;
+package chat.utils.filter;
 
-import chat.filter.interfaces.Filter;
+import chat.utils.filter.interfaces.Filter;
 import constant.Writing;
 
 public class SwearWordsFilter implements Filter {
@@ -12,11 +12,9 @@ public class SwearWordsFilter implements Filter {
 
         for (String word : splittedMsg){
             for (String swearWord : Writing.swearWords){
-                if (swearWord.toLowerCase().contains(word.toLowerCase()) && word.length() > 1){
+                if (swearWord.substring(0, swearWord.length() - 1).equalsIgnoreCase(word) && word.length() > 1){
 
-                    for (int i = 1; i < word.length() - 1; i++){
-                        word = word.replace(word.substring(i, i + 1), "*");
-                    }
+                    word = word.replace(word.substring(1, word.length() - 1), "*");
 
                 }
             }

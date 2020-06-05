@@ -1,6 +1,6 @@
-package chat.filter;
+package chat.utils.filter;
 
-import chat.filter.interfaces.Filter;
+import chat.utils.filter.interfaces.Filter;
 import constant.Writing;
 
 import java.util.StringTokenizer;
@@ -20,7 +20,7 @@ public class SpaceFilter implements Filter {
             builder.append(val).append(" ");
         }
 
-        builder.replace(builder.length() - 1, builder.length(), "");
+        if (!builder.toString().isEmpty()) builder.replace(builder.length() - 1, builder.length(), "");
         return builder.toString();
     }
 }

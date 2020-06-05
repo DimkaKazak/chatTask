@@ -1,6 +1,6 @@
-package chat.filter;
+package chat.utils.filter;
 
-import chat.filter.interfaces.Filter;
+import chat.utils.filter.interfaces.Filter;
 import constant.Writing;
 
 import java.util.List;
@@ -15,12 +15,14 @@ public class FirstLetterFilter implements Filter {
 
     @Override
     public String filter(String message) {
+        if (message.isEmpty()) return "";
+
         String[] splittedMsg = message.split(" ");
         StringBuilder builder = new StringBuilder("");
 
         for (String word : splittedMsg){
             for (String name : writtings){
-                if (name.toLowerCase().contains(word.toLowerCase())){
+                if (name.equalsIgnoreCase(word)){
                     word = String.valueOf(word.charAt(0)).toUpperCase() + word.substring(1).toLowerCase();
                 }
             }
