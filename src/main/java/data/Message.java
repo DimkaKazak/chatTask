@@ -1,10 +1,13 @@
-package xml.data;
+package data;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 
+@JsonAutoDetect
 @XmlType(name = "message")
 @XmlRootElement
 public class Message implements Comparable<Message>{

@@ -2,7 +2,7 @@ package chat.utils;
 
 import chat.client.MultiThreadedSocketClient;
 import chat.server.MultiThreadedSocketServer;
-import xml.data.Message;
+import data.Message;
 import xml.unmarshaller.XmlUnmarshaller;
 
 import javax.xml.bind.JAXBException;

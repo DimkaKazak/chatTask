@@ -3,7 +3,7 @@ package chat.client;
 import constant.PropertyValues;
 import context.ContextManager;
 import org.apache.log4j.Logger;
-import xml.data.Message;
+import data.Message;
 import xml.marshaller.XmlMarshaller;
 import xml.unmarshaller.XmlUnmarshaller;
 
@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Date;
 import java.util.Scanner;
 
 import static chat.utils.XmlUtils.*;

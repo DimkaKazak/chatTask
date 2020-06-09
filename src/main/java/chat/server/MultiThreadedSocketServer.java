@@ -5,7 +5,7 @@ import chat.utils.filter.interfaces.Filter;
 import constant.Writing;
 import context.ContextManager;
 import org.apache.log4j.Logger;
-import xml.data.Message;
+import data.Message;
 import xml.marshaller.XmlMarshaller;
 import xml.unmarshaller.XmlUnmarshaller;
 
