@@ -9,19 +9,6 @@ import java.io.StringWriter;
 
 public class JsonMarshaller extends JsonContext {
 
-    public static void main(String[] args) {
-        Message msg = new Message();
-        msg.setMsg("HELLO");
-        msg.setPort(1111);
-
-
-        try {
-            System.out.println(new JsonMarshaller().getJson(msg));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public JsonMarshaller(){
         super(new ObjectMapper());
     }
