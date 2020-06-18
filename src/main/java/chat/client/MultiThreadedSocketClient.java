@@ -1,6 +1,6 @@
 package chat.client;
 
-import constant.PropertyValues;
+import constant.ChatPropertyValues;
 import context.ContextManager;
 import org.apache.log4j.Logger;
 import data.Message;
@@ -49,8 +49,8 @@ public class MultiThreadedSocketClient {
     public MultiThreadedSocketClient(){
         this.scanner = new Scanner(System.in);
 
-        this.IP = ContextManager.getInstance().getProperty(PropertyValues.HOST.getPropertyName());
-        this.PORT = Integer.parseInt(ContextManager.getInstance().getProperty(PropertyValues.PORT.getPropertyName()));
+        this.IP = ContextManager.getInstance().getProperty(ChatPropertyValues.HOST.getPropertyName());
+        this.PORT = Integer.parseInt(ContextManager.getInstance().getProperty(ChatPropertyValues.PORT.getPropertyName()));
 
         try {
             initMarshalling();

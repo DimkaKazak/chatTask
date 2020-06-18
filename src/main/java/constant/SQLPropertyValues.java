@@ -1,13 +1,15 @@
 package constant;
 
-public enum PropertyValues {
+public enum SQLPropertyValues {
 
-    HOST("HOST"),
-    PORT("PORT");
+    USERNAME("username"),
+    PASSWORD("password"),
+    URL("url"),
+    DRIVER("driver");
 
     private String propertyName;
 
-    PropertyValues(String propertyName){
+    SQLPropertyValues(String propertyName){
         this.propertyName = propertyName;
     }
 

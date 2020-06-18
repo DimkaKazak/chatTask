@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="message_mapper">
+    <select id="getById" resultMap="message_map">
+        SELECT *
+        FROM message
+        WHERE message.id = #{id}
+    </select>
+    <select id="getAll" resultMap="message_map">
+        SELECT * FROM message
+    </select>
+
+    <resultMap id="message_map" type="data.Message" autoMapping="false">
+        <id property="id" column="id" />
+        <result property="token" column="token"/>
+        <result property="msg" column="msg"/>
+        <result property="date" column="date"/>
+    </resultMap>
+
+</mapper>

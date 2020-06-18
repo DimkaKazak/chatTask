@@ -19,7 +19,8 @@ public class Message implements Comparable<Message>{
         this.date = new Date();
     }
 
-    public Message(String host, int port, String token, String msg, Date date){
+    public Message(int id, String host, int port, String token, String msg, Date date){
+        this.id = id;
         this.host = host;
         this.port = port;
         this.token = token;
@@ -27,6 +28,7 @@ public class Message implements Comparable<Message>{
         this.date = date;
     }
 
+    private int id;
     private String host;
     private int port;
     private String token;
@@ -38,6 +40,10 @@ public class Message implements Comparable<Message>{
         if (getDate() == null || message.getDate() == null)
             return 0;
         return getDate().compareTo(message.getDate());
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setHost(String host) {
@@ -58,6 +64,11 @@ public class Message implements Comparable<Message>{
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    @XmlElement(name = "id")
+    public int getId() {
+        return id;
     }
 
     @XmlElement(name = "host")
@@ -84,6 +95,5 @@ public class Message implements Comparable<Message>{
     public String getToken() {
         return token;
     }
-
 
 }
