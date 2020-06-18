@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import data.Message;
 import sql.dao.impl.ClientDAO;
 import sql.dao.impl.MessageDAO;
+import sql.service.ClientService;
+import sql.service.MessageService;
 import xml.marshaller.XmlMarshaller;
 import xml.unmarshaller.XmlUnmarshaller;
 
@@ -33,8 +35,8 @@ public class MultiThreadedSocketServer {
     private static XmlMarshaller xmlMarshaller;
     private static XmlUnmarshaller xmlUnmarshaller;
 
-    private final ClientDAO clientDAO = new ClientDAO();
-    private final MessageDAO messageDAO = new MessageDAO();
+    private final ClientService clientService = new ClientService();
+    private final MessageService messageService = new MessageService();
 
     private static void initMarshalling() throws JAXBException{
 
@@ -157,10 +159,10 @@ public class MultiThreadedSocketServer {
                 out.println(initMessageOut("accepted", MultiThreadedSocketServer.this));
 
                 ClientInfo clientInfo = new ClientInfo(UUID.randomUUID().toString(), name, "");
-                clientDAO.create(clientInfo);
+                clientService.create(clientInfo);
 
-                messageDAO.getHistory().forEach(historyMsg -> {
-                        out.println(initMessageOut(clientDAO.getById(historyMsg.getClientId()).getName() + " : " +
+                messageService.getMessageHistory().forEach(historyMsg -> {
+                        out.println(initMessageOut(clientService.getClientById(historyMsg.getClientId()).getName() + " : " +
                                 historyMsg.getMsg(), MultiThreadedSocketServer.this));
                         });
 
@@ -170,7 +172,7 @@ public class MultiThreadedSocketServer {
                     Message msgIn = getMessageIn(readXml(in), xmlUnmarshaller);
                     msgIn.setId(UUID.randomUUID().toString());
                     msgIn.setClientId(clientInfo.getId());
-                    messageDAO.create(msgIn);
+                    messageService.create(msgIn);
 
                     String str = msgIn.getMsg();
                     if (str.equals("exit")) break;

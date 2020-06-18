@@ -19,12 +19,12 @@ public class MessageDAO implements sql.dao.MessageDAO {
     }
 
     @Override
-    public void update() {
+    public void update(Message message) {
 
     }
 
     @Override
-    public void delete() {
+    public void deleteById(String id) {
 
     }
 

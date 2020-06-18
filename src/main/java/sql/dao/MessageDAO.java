@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface MessageDAO {
     void create(Message message);
-    void update();
-    void delete();
+    void update(Message message);
+    void deleteById(String id);
     
     Message getById(String id);
     List<Message> getAll();

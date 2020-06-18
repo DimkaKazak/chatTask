@@ -19,12 +19,12 @@ public class ClientDAO implements sql.dao.ClientDAO {
     }
 
     @Override
-    public void update() {
+    public void update(ClientInfo clientInfo) {
 
     }
 
     @Override
-    public void delete() {
+    public void deleteById(String id) {
 
     }
 

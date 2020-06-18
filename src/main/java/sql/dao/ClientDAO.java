@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface ClientDAO {
     void create(ClientInfo clientInfo);
-    void update();
-    void delete();
+    void update(ClientInfo clientInfo);
+    void deleteById(String id);
 
     ClientInfo getById(String id);
     List<ClientInfo> getAll();
