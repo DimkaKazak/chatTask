@@ -14,6 +14,13 @@ public class Message implements Comparable<Message>{
 
     public Message(){}
 
+    public Message(String id, String  msg, String clientId){
+        this.id = id;
+        this.msg = msg;
+        this.clientId = clientId;
+        this.date = new Date();
+    }
+
     public Message(String msg){
         this.msg = msg;
         this.date = new Date();

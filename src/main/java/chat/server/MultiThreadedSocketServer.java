@@ -172,7 +172,7 @@ public class MultiThreadedSocketServer {
                     Message msgIn = getMessageIn(readXml(in), xmlUnmarshaller);
                     msgIn.setId(UUID.randomUUID().toString());
                     msgIn.setClientId(clientInfo.getId());
-                    messageService.create(msgIn);
+                    messageService.createMessage(msgIn);
 
                     String str = msgIn.getMsg();
                     if (str.equals("exit")) break;

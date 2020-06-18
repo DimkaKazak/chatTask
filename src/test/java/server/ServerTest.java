@@ -1,5 +1,7 @@
+package server;
+
 import org.testng.annotations.Test;
-import base.server.BaseTest;
+import server.base.BaseTest;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;

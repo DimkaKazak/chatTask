@@ -1,6 +1,5 @@
-package base.server;
+package server.base;
 
-import base.server.ServerThread;
 import chat.client.MultiThreadedSocketClient;
 import chat.server.MultiThreadedSocketServer;
 import org.testng.annotations.AfterClass;

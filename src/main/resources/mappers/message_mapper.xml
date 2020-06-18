@@ -21,6 +21,20 @@
         SELECT * FROM message
     </select>
 
+    <update id="update">
+        UPDATE message SET
+        text = #{msg},
+        idClient = #{clientId},
+        date = #{date},
+        token = #{token}
+        WHERE idMessage = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM message
+        WHERE idMessage = #{id}
+    </delete>
+
     <insert id="create">
         INSERT INTO message (idMessage, text, idClient, date, token)
         VALUES (#{id}, #{msg}, #{clientId}, #{date}, #{token})

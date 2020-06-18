@@ -20,12 +20,18 @@ public class MessageDAO implements sql.dao.MessageDAO {
 
     @Override
     public void update(Message message) {
-
+        SqlSession sqlSession = SessionFactory.getSession();
+        sqlSession.update(namespace + ".update", message);
+        sqlSession.commit();
+        sqlSession.close();
     }
 
     @Override
-    public void deleteById(String id) {
-
+    public void delete(Message message) {
+        SqlSession sqlSession = SessionFactory.getSession();
+        sqlSession.delete(namespace + ".delete", message);
+        sqlSession.commit();
+        sqlSession.close();
     }
 
     @Override

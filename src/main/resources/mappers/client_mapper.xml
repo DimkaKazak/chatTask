@@ -14,6 +14,18 @@
         SELECT * FROM client
     </select>
 
+    <update id="update">
+        UPDATE client SET
+        name = #{name},
+        password = #{password}
+        WHERE idClient = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM client
+        WHERE idClient = #{id}
+    </delete>
+
     <insert id="create">
         INSERT INTO client (idClient, name, password)
         VALUES (#{id}, #{name}, #{password})

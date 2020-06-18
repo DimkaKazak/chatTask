@@ -25,8 +25,8 @@ public class MessageService {
         return messageDAO.getHistory();
     }
 
-    public void deleteMessageById(String id){
-        messageDAO.deleteById(id);
+    public void deleteMessage(Message message){
+        messageDAO.delete(message);
     }
 
     public void updateMessage(Message message){

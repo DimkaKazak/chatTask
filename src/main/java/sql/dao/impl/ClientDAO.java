@@ -20,12 +20,18 @@ public class ClientDAO implements sql.dao.ClientDAO {
 
     @Override
     public void update(ClientInfo clientInfo) {
-
+        SqlSession sqlSession = SessionFactory.getSession();
+        sqlSession.update(namespace + ".update", clientInfo);
+        sqlSession.commit();
+        sqlSession.close();
     }
 
     @Override
-    public void deleteById(String id) {
-
+    public void deleteClient(ClientInfo clientInfo) {
+        SqlSession sqlSession = SessionFactory.getSession();
+        sqlSession.delete(namespace + ".deleteById", clientInfo);
+        sqlSession.commit();
+        sqlSession.close();
     }
 
     @Override

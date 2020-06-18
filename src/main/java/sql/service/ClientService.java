@@ -17,8 +17,8 @@ public class ClientService {
         clientDAO.update(clientInfo);
     }
 
-    public void deleteClientById(String id){
-        clientDAO.deleteById(id);
+    public void deleteClient(ClientInfo clientInfo){
+        clientDAO.deleteClient(clientInfo);
     }
 
     public ClientInfo getClientById(String id){

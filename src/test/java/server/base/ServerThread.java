@@ -1,4 +1,4 @@
-package base.server;
+package server.base;
 
 import chat.server.MultiThreadedSocketServer;
 
