@@ -5,10 +5,10 @@ import data.ClientInfo;
 import java.util.List;
 
 public interface ClientDAO {
-    void create();
+    void create(ClientInfo clientInfo);
     void update();
     void delete();
 
-    ClientInfo getById(int id);
+    ClientInfo getById(String id);
     List<ClientInfo> getAll();
 }

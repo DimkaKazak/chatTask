@@ -3,19 +3,35 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="message_mapper">
+
+    <select id="getHistory" resultMap="message_map">
+        SELECT *
+        FROM message
+        ORDER BY date
+        LIMIT 20
+    </select>
+
     <select id="getById" resultMap="message_map">
         SELECT *
         FROM message
-        WHERE message.id = #{id}
+        WHERE message.idMessage = #{id}
     </select>
+
     <select id="getAll" resultMap="message_map">
         SELECT * FROM message
     </select>
 
+    <insert id="create">
+        INSERT INTO message (idMessage, text, idClient, date, token)
+        VALUES (#{id}, #{msg}, #{clientId}, #{date}, #{token})
+    </insert>
+
+
     <resultMap id="message_map" type="data.Message" autoMapping="false">
-        <id property="id" column="id" />
+        <id property="id" column="idMessage" />
+        <id property="clientId" column="idClient"/>
         <result property="token" column="token"/>
-        <result property="msg" column="msg"/>
+        <result property="msg" column="text"/>
         <result property="date" column="date"/>
     </resultMap>
 

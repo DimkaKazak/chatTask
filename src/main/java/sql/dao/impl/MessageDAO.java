@@ -7,12 +7,15 @@ import sql.SessionFactory;
 import java.util.List;
 
 public class MessageDAO implements sql.dao.MessageDAO {
-    
+
     final static String namespace = "message_mapper";
 
     @Override
-    public void create() {
-
+    public void create(Message message) {
+        SqlSession sqlSession = SessionFactory.getSession();
+        sqlSession.insert(namespace + ".create", message);
+        sqlSession.commit();
+        sqlSession.close();
     }
 
     @Override
@@ -26,7 +29,7 @@ public class MessageDAO implements sql.dao.MessageDAO {
     }
 
     @Override
-    public Message getById(int id) {
+    public Message getById(String id) {
         SqlSession sqlSession = SessionFactory.getSession();
         Message message = sqlSession.selectOne(namespace + ".getById", id);
         sqlSession.close();
@@ -39,5 +42,13 @@ public class MessageDAO implements sql.dao.MessageDAO {
         List<Message> messages = sqlSession.selectList(namespace + ".getAll");
         sqlSession.close();
         return messages;
+    }
+
+    @Override
+    public List<Message> getHistory() {
+        SqlSession sqlSession = SessionFactory.getSession();
+        List<Message> history = sqlSession.selectList(namespace + ".getHistory");
+        sqlSession.close();
+        return history;
     }
 }

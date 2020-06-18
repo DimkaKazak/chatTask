@@ -11,22 +11,47 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement
 public class ClientInfo {
 
-    private int id;
+    private String id;
     private String name;
     private String password;
 
     public ClientInfo(){}
 
-    public ClientInfo(int id){
+    public ClientInfo(String id){
         this.id = id;
+    }
+
+    public ClientInfo(String id, String name, String password){
+        this.id = id;
+        this.name = name;
+        this.password = password;
+
     }
 
     @XmlElement(name = "id")
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    @XmlElement(name = "name")
+    public String getName() {
+        return name;
+    }
+
+    @XmlElement(name = "password")
+    public String getPassword() {
+        return password;
+    }
+
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -11,8 +11,11 @@ public class ClientDAO implements sql.dao.ClientDAO {
     final static String namespace = "client_mapper";
 
     @Override
-    public void create() {
-
+    public void create(ClientInfo clientInfo) {
+        SqlSession sqlSession = SessionFactory.getSession();
+        sqlSession.insert(namespace + ".create", clientInfo);
+        sqlSession.commit();
+        sqlSession.close();
     }
 
     @Override
@@ -26,7 +29,7 @@ public class ClientDAO implements sql.dao.ClientDAO {
     }
 
     @Override
-    public ClientInfo getById(int id) {
+    public ClientInfo getById(String id) {
         SqlSession sqlSession = SessionFactory.getSession();
         ClientInfo clientInfo = sqlSession.selectOne(namespace + ".getById", id);
         sqlSession.close();
