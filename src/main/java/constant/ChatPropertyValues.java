@@ -1,13 +1,13 @@
 package constant;
 
-public enum PropertyValues {
+public enum ChatPropertyValues {
 
     HOST("HOST"),
     PORT("PORT");
 
     private String propertyName;
 
-    PropertyValues(String propertyName){
+    ChatPropertyValues(String propertyName){
         this.propertyName = propertyName;
     }
 

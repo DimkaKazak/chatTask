@@ -4,8 +4,13 @@ import chat.utils.filter.*;
 import chat.utils.filter.interfaces.Filter;
 import constant.Writing;
 import context.ContextManager;
+import data.ClientInfo;
 import org.apache.log4j.Logger;
-import xml.data.Message;
+import data.Message;
+import sql.dao.impl.ClientDAO;
+import sql.dao.impl.MessageDAO;
+import sql.service.ClientService;
+import sql.service.MessageService;
 import xml.marshaller.XmlMarshaller;
 import xml.unmarshaller.XmlUnmarshaller;
 
@@ -29,6 +34,9 @@ public class MultiThreadedSocketServer {
 
     private static XmlMarshaller xmlMarshaller;
     private static XmlUnmarshaller xmlUnmarshaller;
+
+    private final ClientService clientService = new ClientService();
+    private final MessageService messageService = new MessageService();
 
     private static void initMarshalling() throws JAXBException{
 
@@ -60,7 +68,6 @@ public class MultiThreadedSocketServer {
     }
 
     private final List<Connection> connections = Collections.synchronizedList(new ArrayList<>());
-    private final List<Message> chatHistory = Collections.synchronizedList(new ArrayList<>());
     private ServerSocket server;
 
     public MultiThreadedSocketServer() {
@@ -150,21 +157,27 @@ public class MultiThreadedSocketServer {
                 }
 
                 out.println(initMessageOut("accepted", MultiThreadedSocketServer.this));
-                chatHistory.sort(Comparator.comparing(Message::getDate));
-                chatHistory.forEach(historyMsg -> {
-                    out.println(initMessageOut(historyMsg.getMsg(), MultiThreadedSocketServer.this));
-                });
-                sendMsgForAll(name + " присоединился.");
 
+                ClientInfo clientInfo = new ClientInfo(UUID.randomUUID().toString(), name, "");
+                clientService.create(clientInfo);
+
+                messageService.getMessageHistory().forEach(historyMsg -> {
+                        out.println(initMessageOut(clientService.getClientById(historyMsg.getClientId()).getName() + " : " +
+                                historyMsg.getMsg(), MultiThreadedSocketServer.this));
+                        });
+
+                sendMsgForAll(name + " присоединился.");
 
                 while (true) {
                     Message msgIn = getMessageIn(readXml(in), xmlUnmarshaller);
-                    String str = msgIn.getMsg();
+                    msgIn.setId(UUID.randomUUID().toString());
+                    msgIn.setClientId(clientInfo.getId());
+                    messageService.createMessage(msgIn);
 
+                    String str = msgIn.getMsg();
                     if (str.equals("exit")) break;
                     String toSend = name + ": " + filterMsg(str);
                     sendMsgForAll(toSend);
-                    chatHistory.add(msgIn);
                 }
 
                 sendMsgForAll(name + ": " + "вышел.");
@@ -224,10 +237,6 @@ public class MultiThreadedSocketServer {
 
     public List<Filter> getFilterList() {
         return filterList;
-    }
-
-    public List<Message> getChatHistory() {
-        return chatHistory;
     }
 
     public NickFilter getNickFilter() {

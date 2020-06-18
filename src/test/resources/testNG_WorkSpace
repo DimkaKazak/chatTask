@@ -2,9 +2,18 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name = "SuiteServer">
-    <test name = "test1">
+
+    <test name = "ServerTest">
         <classes>
-            <class name = "base.multiThreadedSocketServer.ServerTest"/>
+            <class name = "server.ServerTest"/>
         </classes>
     </test>
+
+    <test name = "SQLTest">
+        <classes>
+            <class name="sql.ClientTest"/>
+            <class name="sql.MessageTest"/>
+        </classes>
+    </test>
+
 </suite>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="client_mapper">
+
+    <select id="getById" resultMap="client_map">
+        SELECT *
+        FROM client
+        WHERE client.idClient = #{id}
+    </select>
+
+    <select id="getAll" resultMap="client_map">
+        SELECT * FROM client
+    </select>
+
+    <update id="update">
+        UPDATE client SET
+        name = #{name},
+        password = #{password}
+        WHERE idClient = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM client
+        WHERE idClient = #{id}
+    </delete>
+
+    <insert id="create">
+        INSERT INTO client (idClient, name, password)
+        VALUES (#{id}, #{name}, #{password})
+    </insert>
+
+    <resultMap id="client_map" type="data.ClientInfo" autoMapping="false">
+        <id property="id" column="idClient" />
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+    </resultMap>
+</mapper>

@@ -1,9 +1,9 @@
 package chat.client;
 
-import constant.PropertyValues;
+import constant.ChatPropertyValues;
 import context.ContextManager;
 import org.apache.log4j.Logger;
-import xml.data.Message;
+import data.Message;
 import xml.marshaller.XmlMarshaller;
 import xml.unmarshaller.XmlUnmarshaller;
 
@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Date;
 import java.util.Scanner;
 
 import static chat.utils.XmlUtils.*;
@@ -50,8 +49,8 @@ public class MultiThreadedSocketClient {
     public MultiThreadedSocketClient(){
         this.scanner = new Scanner(System.in);
 
-        this.IP = ContextManager.getInstance().getProperty(PropertyValues.HOST.getPropertyName());
-        this.PORT = Integer.parseInt(ContextManager.getInstance().getProperty(PropertyValues.PORT.getPropertyName()));
+        this.IP = ContextManager.getInstance().getProperty(ChatPropertyValues.HOST.getPropertyName());
+        this.PORT = Integer.parseInt(ContextManager.getInstance().getProperty(ChatPropertyValues.PORT.getPropertyName()));
 
         try {
             initMarshalling();

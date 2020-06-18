@@ -1,22 +1,34 @@
-package xml.data;
+package data;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 
+@JsonAutoDetect
 @XmlType(name = "message")
 @XmlRootElement
 public class Message implements Comparable<Message>{
 
     public Message(){}
 
+    public Message(String id, String  msg, String clientId){
+        this.id = id;
+        this.msg = msg;
+        this.clientId = clientId;
+        this.date = new Date();
+    }
+
     public Message(String msg){
         this.msg = msg;
         this.date = new Date();
     }
 
-    public Message(String host, int port, String token, String msg, Date date){
+    public Message(String id, String clientId, String host, int port, String token, String msg, Date date){
+        this.id = id;
+        this.clientId = clientId;
         this.host = host;
         this.port = port;
         this.token = token;
@@ -24,6 +36,8 @@ public class Message implements Comparable<Message>{
         this.date = date;
     }
 
+    private String id;
+    private String clientId;
     private String host;
     private int port;
     private String token;
@@ -35,6 +49,14 @@ public class Message implements Comparable<Message>{
         if (getDate() == null || message.getDate() == null)
             return 0;
         return getDate().compareTo(message.getDate());
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     public void setHost(String host) {
@@ -55,6 +77,15 @@ public class Message implements Comparable<Message>{
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    @XmlElement(name = "id")
+    public String getId() {
+        return id;
+    }
+
+    public String getClientId() {
+        return clientId;
     }
 
     @XmlElement(name = "host")
@@ -81,6 +112,5 @@ public class Message implements Comparable<Message>{
     public String getToken() {
         return token;
     }
-
 
 }
